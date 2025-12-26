@@ -1,31 +1,38 @@
-from sentence_transformers import SentenceTransformer
 import numpy as np
-from functools import lru_cache
-
 
 class EmbeddingService:
     """Lazy-loaded sentence embedding service"""
 
-    def __init__(self):
-        self.model = None
+    _instance = None
+    _model = None
+
+    def __new__(cls):
+        """Singleton pattern to ensure only one model instance"""
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
     def _load_model(self):
-        """Lazy load embedding model"""
-        if self.model is None:
+        """Lazy load embedding model only when needed"""
+        if EmbeddingService._model is None:
             print("Loading sentence transformer model...")
-            self.model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-            print("Model loaded!")
+            try:
+                from sentence_transformers import SentenceTransformer
+                EmbeddingService._model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+                print("Model loaded successfully!")
+            except Exception as e:
+                print(f"Error loading model: {e}")
+                raise
 
-    @lru_cache(maxsize=1000)
     def embed(self, text):
-        """Embed a single text (cached)"""
+        """Embed a single text"""
         self._load_model()
-        return self.model.encode(text, convert_to_numpy=True)
+        return EmbeddingService._model.encode(text, convert_to_numpy=True)
 
     def embed_batch(self, texts):
         """Embed multiple texts"""
         self._load_model()
-        return self.model.encode(texts, convert_to_numpy=True)
+        return EmbeddingService._model.encode(texts, convert_to_numpy=True)
 
     def cosine_similarity(self, vec1, vec2):
         """Compute cosine similarity between two vectors"""

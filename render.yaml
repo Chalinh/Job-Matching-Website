@@ -3,7 +3,7 @@ services:
     name: job-matching-website
     env: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn config.wsgi:application"
+    startCommand: "gunicorn config.wsgi:application --config gunicorn.conf.py"
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
