@@ -28,13 +28,16 @@ A smart, **guest-only** job matching system that uses AI to match user profiles 
 cd d:\Job-Matching-Website
 venv\Scripts\activate
 
-# 2. Create database tables
+# 2. Configure environment (edit .env file with your database password)
+# DB_PASSWORD=your_postgresql_password
+
+# 3. Create database tables
 python manage.py migrate
 
-# 3. Load 3,680 job postings
+# 4. Load 1,777 job postings
 python manage.py load_jobs
 
-# 4. Start the server
+# 5. Start the server
 python manage.py runserver
 ```
 
@@ -58,7 +61,8 @@ No PostgreSQL, no manual SQL, no complicated setup!
 
 | Guide | Description |
 |-------|-------------|
-| **[DEPLOYMENT.md](DEPLOYMENT.md)** | 🚀 Complete deployment guide for production |
+| **[DEPLOYMENT.md](DEPLOYMENT.md)** | 🚀 Complete deployment guide (SQLite) |
+| **[MIGRATION_README.md](MIGRATION_README.md)** | 🗄️ Migrate from SQLite to PostgreSQL |
 | **[SIMPLE_SETUP.md](SIMPLE_SETUP.md)** | ⚡ Super simple SQLite setup (2 minutes!) |
 | **[PROJECT_STATUS.md](PROJECT_STATUS.md)** | 📊 Full system architecture & troubleshooting |
 
@@ -87,8 +91,7 @@ python manage.py runserver
 
 ## 📊 Database Info
 
-- **Type**: SQLite3 (built into Python, production-ready)
-- **File**: `db.sqlite3` (created automatically)
+- **Type**: PostgreSQL (production-ready) / SQLite (development)
 - **Jobs**: 1,777 normalized postings
 - **Size**: ~15 MB after loading data
 - **Performance**: Excellent for job search applications
