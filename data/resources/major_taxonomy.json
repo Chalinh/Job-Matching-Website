@@ -1,0 +1,60 @@
+{
+  "engineering": [
+    "engineering", "civil engineering", "mechanical engineering", "electrical engineering",
+    "chemical engineering", "industrial engineering", "aerospace engineering",
+    "biomedical engineering", "environmental engineering", "petroleum engineering",
+    "software engineering", "systems engineering", "structural engineering",
+    "materials engineering", "nuclear engineering", "agricultural engineering"
+  ],
+  "computer_science": [
+    "computer science", "information technology", "it", "computer engineering",
+    "information systems", "computer information systems", "data science",
+    "artificial intelligence", "machine learning", "cybersecurity",
+    "information security", "network engineering", "software development"
+  ],
+  "business": [
+    "business administration", "business management", "management", "mba",
+    "finance", "accounting", "economics", "marketing", "human resources", "hr",
+    "business analytics", "supply chain management", "operations management",
+    "international business", "entrepreneurship", "organizational leadership"
+  ],
+  "design_arts": [
+    "graphic design", "interior design", "architecture", "industrial design",
+    "fashion design", "web design", "ux design", "ui design", "product design",
+    "visual arts", "fine arts", "digital arts", "multimedia design",
+    "animation", "game design", "3d design"
+  ],
+  "science": [
+    "biology", "chemistry", "physics", "mathematics", "statistics",
+    "biotechnology", "biochemistry", "microbiology", "molecular biology",
+    "environmental science", "geology", "astronomy", "neuroscience"
+  ],
+  "health_medical": [
+    "medicine", "nursing", "pharmacy", "dentistry", "public health",
+    "health administration", "medical technology", "physical therapy",
+    "occupational therapy", "nutrition", "veterinary medicine"
+  ],
+  "social_sciences": [
+    "psychology", "sociology", "anthropology", "political science",
+    "international relations", "social work", "criminology", "geography"
+  ],
+  "education": [
+    "education", "teaching", "early childhood education", "elementary education",
+    "secondary education", "special education", "educational leadership",
+    "curriculum development", "instructional design"
+  ],
+  "communication": [
+    "communications", "journalism", "public relations", "media studies",
+    "broadcasting", "advertising", "digital media", "mass communication"
+  ],
+  "law_legal": [
+    "law", "legal studies", "paralegal studies", "criminal justice",
+    "pre-law", "legal administration"
+  ],
+  "other": [
+    "hospitality management", "hotel management", "tourism", "culinary arts",
+    "logistics", "supply chain", "real estate", "construction management",
+    "project management", "quality management", "any field", "related field",
+    "any discipline", "related discipline"
+  ]
+}

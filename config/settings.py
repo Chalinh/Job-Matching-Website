@@ -73,6 +73,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# SQLite database configuration (simple, no installation required)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

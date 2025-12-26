@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4">
+    <!-- Hero Section -->
+    <div class="text-center mb-6">
+        <h1 class="text-3xl font-bold gradient-text mb-2">Find Your Next Job</h1>
+        <p class="text-gray-600 text-sm">Search for opportunities that match your profile</p>
+    </div>
+
+    <!-- Main Form Card -->
+    <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 card-hover border border-gray-100">
+        <div class="flex items-center space-x-2.5 mb-5">
+            <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-lg font-bold text-gray-800">Job Search Preferences</h2>
+                <p class="text-xs text-gray-500">Tell us about your ideal position</p>
+            </div>
+        </div>
+
+        <form method="POST" action="{% url 'jobs:search_results' %}" class="space-y-4">
+            {% csrf_token %}
+
+            <!-- Skills -->
+            <div class="group">
+                <label class="block text-gray-700 font-semibold mb-1.5 flex items-center space-x-1.5 text-sm">
+                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>{{ form.skills.label }}</span>
+                </label>
+                {{ form.skills }}
+                <p class="text-[11px] text-gray-500 mt-1 ml-0.5">{{ form.skills.help_text }}</p>
+            </div>
+
+            <!-- Experience Section -->
+            <div class="group">
+                <label class="block text-gray-700 font-semibold mb-1.5 flex items-center space-x-1.5 text-sm">
+                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <span>Experience</span>
+                </label>
+
+                <div class="bg-gray-50 p-3 rounded-lg border border-gray-200 space-y-2">
+                    <div>
+                        <label class="text-xs text-gray-600">Years of Experience</label>
+                        {{ form.years_of_experience }}
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-600">Job Title</label>
+                        {{ form.current_job_title }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Education Section -->
+            <div class="group">
+                <label class="block text-gray-700 font-semibold mb-1.5 flex items-center space-x-1.5 text-sm">
+                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                    </svg>
+                    <span>Education</span>
+                </label>
+
+                <div class="bg-gray-50 p-3 rounded-lg border border-gray-200 space-y-2">
+                    <div>
+                        <label class="text-xs text-gray-600">{{ form.education_level.label }}</label>
+                        {{ form.education_level }}
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-600">{{ form.education_major.label }}</label>
+                        {{ form.education_major }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Languages -->
+            <div class="group">
+                <label class="block text-gray-700 font-semibold mb-1.5 flex items-center space-x-1.5 text-sm">
+                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                    </svg>
+                    <span>Languages</span>
+                </label>
+
+                <div id="languages-container" class="space-y-2">
+                    <!-- Language entry template -->
+                    <div class="language-entry bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-1">Language</label>
+                                <input type="text" name="language_1" placeholder="e.g., English" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-600 mb-1">Proficiency</label>
+                                <select name="proficiency_1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm">
+                                    <option value="">Select level</option>
+                                    <option value="basic">Basic</option>
+                                    <option value="good">Good</option>
+                                    <option value="fluent">Fluent</option>
+                                    <option value="native">Native</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" class="remove-language mt-2 text-red-500 hover:text-red-700 text-xs opacity-0 group-hover:opacity-100 transition-opacity" style="display: none;">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            Remove
+                        </button>
+                    </div>
+                </div>
+
+                <button type="button" id="add-language" class="mt-2 text-purple-600 hover:text-purple-800 text-sm font-medium flex items-center space-x-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    <span>Add Another Language</span>
+                </button>
+
+                <p class="text-[11px] text-gray-500 mt-1 ml-0.5">Add your language skills with proficiency levels</p>
+            </div>
+
+            <!-- Location -->
+            <div class="group">
+                <label class="block text-gray-700 font-semibold mb-1.5 flex items-center space-x-1.5 text-sm">
+                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>Location</span>
+                </label>
+                {{ form.preferred_location }}
+                <div class="mt-2 flex items-center">
+                    {{ form.willing_to_relocate }}
+                    <label class="ml-2 text-sm text-gray-700">{{ form.willing_to_relocate.label }}</label>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-2">
+                <button type="submit" class="w-full gradient-bg text-white font-bold py-3 text-sm rounded-xl hover:shadow-2xl transition transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <span>Search Matching Jobs</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<style>
+    /* Style Django form widgets */
+    textarea[name="skills"] {
+        width: 100%;
+        border: 2px solid #e5e7eb;
+        border-radius: 0.75rem;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+        background-color: #f9fafb;
+    }
+
+    textarea[name="skills"]:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px #a855f7;
+        border-color: transparent;
+        background-color: white;
+    }
+
+    input[type="number"], input[type="text"], select {
+        width: 100%;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+        background-color: white;
+    }
+
+    input[type="number"]:focus, input[type="text"]:focus, select:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px #a855f7;
+        border-color: transparent;
+    }
+
+    input[type="checkbox"] {
+        width: 1rem;
+        height: 1rem;
+        border-radius: 0.25rem;
+        border: 2px solid #d1d5db;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let languageCount = 1;
+
+    // Add language button
+    document.getElementById('add-language').addEventListener('click', function() {
+        languageCount++;
+        const container = document.getElementById('languages-container');
+        
+        const languageEntry = document.createElement('div');
+        languageEntry.className = 'language-entry bg-gray-50 p-3 rounded-lg border border-gray-200 group';
+        languageEntry.innerHTML = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div>
+                    <label class="block text-xs text-gray-600 mb-1">Language</label>
+                    <input type="text" name="language_${languageCount}" placeholder="e.g., English" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-600 mb-1">Proficiency</label>
+                    <select name="proficiency_${languageCount}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm">
+                        <option value="">Select level</option>
+                        <option value="basic">Basic</option>
+                        <option value="good">Good</option>
+                        <option value="fluent">Fluent</option>
+                        <option value="native">Native</option>
+                    </select>
+                </div>
+            </div>
+            <button type="button" class="remove-language mt-2 text-red-500 hover:text-red-700 text-xs flex items-center space-x-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+                <span>Remove</span>
+            </button>
+        `;
+        
+        container.appendChild(languageEntry);
+        updateRemoveButtons();
+    });
+
+    // Function to update remove button visibility
+    function updateRemoveButtons() {
+        const entries = document.querySelectorAll('.language-entry');
+        entries.forEach((entry, index) => {
+            const removeBtn = entry.querySelector('.remove-language');
+            if (entries.length > 1) {
+                removeBtn.style.display = 'flex';
+            } else {
+                removeBtn.style.display = 'none';
+            }
+        });
+    }
+
+    // Event delegation for remove buttons
+    document.getElementById('languages-container').addEventListener('click', function(e) {
+        if (e.target.closest('.remove-language')) {
+            e.target.closest('.language-entry').remove();
+            updateRemoveButtons();
+        }
+    });
+
+    // Initial setup
+    updateRemoveButtons();
+});
+</script>
+{% endblock %}

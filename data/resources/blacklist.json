@@ -1,0 +1,58 @@
+{
+  "job_posting_boilerplate": [
+    "please send", "please submit", "please apply", "send cv", "send resume",
+    "email us", "contact us", "we regret", "only shortlisted", "only shortlist",
+    "only qualified", "we are looking", "we are seeking", "looking for",
+    "seeking for", "required skills", "desired skills", "preferred skills",
+    "nice to have", "plus if", "bonus if", "apply now", "join us", "join our team",
+    "urgent hiring", "immediate hiring", "walk in interview", "tel:", "email:",
+    "phone:", "address:", "location:", "salary:", "website:", "www.",
+    "working hours", "working days", "office hours", "monday to", "mon to",
+    "8:00 am", "9:00 am", "full time", "part time", "contract", "permanent",
+    "probation period", "trial period", "contact person", "address no",
+    "national road", "floor", "1st", "2nd", "3rd", "4th", "5th"
+  ],
+  "generic_phrases": [
+    "work experience", "years experience", "experience in", "experience with",
+    "knowledge of", "understanding of", "familiarity with", "proficiency in",
+    "must have", "should have", "must be", "should be", "able to", "ability to",
+    "willing to", "willingness to", "good at", "excellent at", "strong in",
+    "good understanding", "strong understanding", "thorough understanding",
+    "good knowledge", "strong knowledge", "thorough knowledge",
+    "good communication", "excellent communication", "strong communication",
+    "team player", "team work", "work independently", "self motivated",
+    "problem solving", "critical thinking", "attention to detail",
+    "time management", "organizational skills", "interpersonal skills",
+    "work under pressure", "meet deadlines", "fast paced environment",
+    "key responsibilities", "position overview", "professional conduct",
+    "etc", "and", "or", "the", "of", "in", "to", "for", "with"
+  ],
+  "education_noise": [
+    "or related field", "or related", "or equivalent", "or higher", "or above",
+    "or similar", "preferred", "required", "minimum", "at least", "bachelor degree",
+    "master degree", "graduate", "undergraduate", "diploma", "certificate",
+    "any field", "any discipline", "any major"
+  ],
+  "dates_and_numbers": [
+    "2020", "2021", "2022", "2023", "2024", "2025", "2026", "january", "february",
+    "march", "april", "may", "june", "july", "august", "september", "october",
+    "november", "december", "mon", "tue", "wed", "thu", "fri", "sat", "sun"
+  ],
+  "currency_and_amounts": [
+    "usd", "salary", "compensation", "benefits", "bonus", "allowance",
+    "pay", "wage", "rate", "per month", "per year", "per hour"
+  ],
+  "household_and_supplies": [
+    "soap", "toilet paper", "laundry", "cleaning", "supplies", "maintenance",
+    "chores", "meals", "daily routines", "hygiene", "atmosphere"
+  ],
+  "adjectives_and_qualities": [
+    "caring", "inclusive", "nurturing", "positive", "mental", "emotional",
+    "physical", "psychological", "professional", "additional", "required",
+    "needed", "etc..", "including"
+  ],
+  "location_addresses": [
+    "phnom penh", "khan", "sangkat", "phum", "street", "road", "avenue",
+    "building", "city", "province", "district"
+  ]
+}

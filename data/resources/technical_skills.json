@@ -1,0 +1,89 @@
+{
+  "programming_languages": [
+    "python", "java", "javascript", "js", "c++", "c#", "php", "ruby", "go", "golang",
+    "rust", "swift", "kotlin", "typescript", "ts", "r", "matlab", "scala", "perl",
+    "dart", "objective-c", "visual basic", "vb", "sql", "pl/sql", "t-sql"
+  ],
+  "web_technologies": [
+    "html", "html5", "css", "css3", "sass", "scss", "less", "bootstrap", "tailwind",
+    "react", "reactjs", "react.js", "angular", "angularjs", "vue", "vuejs", "vue.js",
+    "next.js", "nextjs", "nuxt", "nuxt.js", "svelte", "ember", "backbone",
+    "jquery", "ajax", "xml", "json", "rest", "restful", "graphql", "soap",
+    "node.js", "nodejs", "express", "expressjs", "fastify", "koa", "nest", "nestjs"
+  ],
+  "backend_frameworks": [
+    "django", "flask", "fastapi", "spring", "spring boot", "hibernate", "laravel",
+    ".net", "dotnet", "asp.net", "aspnet", "ruby on rails", "rails", "symfony",
+    "codeigniter", "yii", "grails", "play framework", "gin", "echo"
+  ],
+  "databases": [
+    "mysql", "postgresql", "postgres", "sql server", "mssql", "oracle", "oracle db",
+    "mongodb", "mongo", "cassandra", "redis", "elasticsearch", "dynamodb",
+    "mariadb", "sqlite", "couchdb", "neo4j", "firestore", "firebase"
+  ],
+  "cloud_platforms": [
+    "aws", "amazon web services", "azure", "microsoft azure", "gcp", "google cloud",
+    "google cloud platform", "heroku", "digitalocean", "linode", "ibm cloud",
+    "alibaba cloud", "oracle cloud"
+  ],
+  "devops_tools": [
+    "docker", "kubernetes", "k8s", "jenkins", "gitlab ci", "github actions",
+    "travis ci", "circleci", "terraform", "ansible", "puppet", "chef", "vagrant",
+    "nginx", "apache", "linux", "unix", "bash", "shell script", "git", "github",
+    "gitlab", "bitbucket", "svn", "mercurial"
+  ],
+  "data_science_ml": [
+    "tensorflow", "pytorch", "keras", "scikit-learn", "sklearn", "pandas", "numpy",
+    "scipy", "matplotlib", "seaborn", "jupyter", "apache spark", "hadoop", "hive",
+    "tableau", "power bi", "powerbi", "qlik", "looker", "databricks", "airflow",
+    "kafka", "apache kafka", "etl", "data pipeline", "machine learning", "ml",
+    "deep learning", "nlp", "natural language processing", "computer vision", "cv"
+  ],
+  "office_productivity": [
+    "ms office", "microsoft office", "ms word", "word", "ms excel", "excel",
+    "ms powerpoint", "powerpoint", "ms outlook", "outlook", "ms access", "access",
+    "ms project", "project", "ms visio", "visio", "ms publisher", "publisher",
+    "google workspace", "g suite", "google docs", "google sheets", "google slides",
+    "office 365", "sharepoint"
+  ],
+  "design_tools": [
+    "adobe photoshop", "photoshop", "adobe illustrator", "illustrator",
+    "adobe indesign", "indesign", "adobe xd", "xd", "adobe premiere", "premiere pro",
+    "adobe after effects", "after effects", "figma", "sketch", "invision",
+    "canva", "coreldraw", "gimp", "inkscape", "blender", "maya", "3ds max",
+    "cinema 4d", "zbrush", "substance painter"
+  ],
+  "cad_engineering": [
+    "autocad", "auto cad", "revit", "civil 3d", "civil3d", "staad pro", "staadpro",
+    "etabs", "sap2000", "tekla", "solidworks", "catia", "inventor", "fusion 360",
+    "sketchup", "archicad", "microstation", "primavera", "ms project",
+    "procore", "bim", "building information modeling"
+  ],
+  "mobile_development": [
+    "android", "android studio", "ios", "xcode", "swift", "swiftui", "objective-c",
+    "react native", "flutter", "xamarin", "ionic", "cordova", "phonegap",
+    "kotlin", "java", "dart"
+  ],
+  "testing_qa": [
+    "selenium", "junit", "testng", "jest", "mocha", "chai", "pytest", "unittest",
+    "cypress", "playwright", "cucumber", "jmeter", "postman", "soapui",
+    "quality assurance", "qa", "test automation", "manual testing"
+  ],
+  "business_tools": [
+    "salesforce", "sap", "erp", "crm", "jira", "confluence", "trello", "asana",
+    "monday.com", "slack", "microsoft teams", "zoom", "sap hana", "sap fico",
+    "sap abap", "odoo", "netsuite", "quickbooks", "xero"
+  ],
+  "soft_skills_technical": [
+    "agile", "scrum", "kanban", "project management", "product management",
+    "business analysis", "data analysis", "problem solving", "debugging",
+    "code review", "version control", "ci/cd", "continuous integration",
+    "continuous deployment", "microservices", "api design", "system design",
+    "database design", "network security", "cybersecurity", "information security",
+    "penetration testing", "ethical hacking", "seo", "sem", "digital marketing"
+  ],
+  "languages_spoken": [
+    "english", "khmer", "chinese", "mandarin", "cantonese", "thai", "vietnamese",
+    "french", "spanish", "japanese", "korean"
+  ]
+}

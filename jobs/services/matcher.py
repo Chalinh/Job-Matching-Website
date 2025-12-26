@@ -1,0 +1,180 @@
+from django.conf import settings
+from django.db.models import Q, Count
+from .embeddings import EmbeddingService
+from .scorers import SkillScorer, EducationScorer, ExperienceScorer, LanguageScorer, LocationScorer
+from .skill_gap import SkillGapAnalyzer
+import json
+from pathlib import Path
+
+
+class JobMatcher:
+    """Database-only job matching service with exact + semantic matching"""
+
+    def __init__(self):
+        self.embedding_service = EmbeddingService()
+        self.skill_scorer = SkillScorer(self.embedding_service)
+        self.education_scorer = EducationScorer()
+        self.experience_scorer = ExperienceScorer()
+        self.language_scorer = LanguageScorer()
+        self.location_scorer = LocationScorer()
+        self.skill_gap_analyzer = SkillGapAnalyzer()
+
+    def _load_normalized_jobs(self):
+        """DEPRECATED: This method is no longer used - database only"""
+        raise NotImplementedError("Database-only operation - JSON fallback removed")
+        data_path = Path(settings.BASE_DIR) / "data" / "normalized_data" / "camhr_normalized_v3_20251226_180932.json"
+
+        if not data_path.exists():
+            print(f"Warning: Job data file not found at {data_path}")
+            return []
+
+        with open(data_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+
+    def _prefilter_jobs(self, user_profile, max_candidates=500):
+        """
+        Pre-filter jobs from database to reduce matching workload
+        Returns: QuerySet of filtered Job objects
+        """
+        from jobs.models import Job
+
+        # Extract user data
+        user_skills = [s.skill_name.lower() for s in user_profile.skills.all()]
+        user_location = user_profile.preferred_location.lower() if user_profile.preferred_location else None
+        user_experience = user_profile.years_of_experience
+
+        # Build filter query
+        query = Q()
+
+        # Filter 1: Location match (if user not willing to relocate)
+        if user_location and not user_profile.willing_to_relocate:
+            query &= Q(location__icontains=user_location)
+
+        # Filter 2: Experience requirement (user meets minimum)
+        # Allow some flexibility: user_exp >= (job_min - 2)
+        if user_experience > 0:
+            query &= Q(min_years_experience__lte=user_experience + 2)
+
+        # Start with filtered base queryset
+        jobs_qs = Job.objects.filter(query) if query else Job.objects.all()
+
+        # Filter 3: Skill overlap (using PostgreSQL JSONB containment)
+        # This is more complex - we'll fetch all and filter in Python for now
+        # Future optimization: Use PostgreSQL GIN index on skills JSONB field
+
+        jobs = list(jobs_qs.values(
+            'job_id', 'job_title', 'company', 'location', 'industry',
+            'min_years_experience', 'education_level', 'education_major',
+            'skills', 'languages', 'raw_text', 'pubdate', 'expdate'
+        ))
+
+        # Filter 4: Require at least 1 skill overlap (if user has skills)
+        if user_skills:
+            filtered_jobs = []
+            for job in jobs:
+                job_skills = [s.lower() for s in job.get('skills', [])]
+                if set(user_skills) & set(job_skills):  # At least 1 skill match
+                    filtered_jobs.append(job)
+            jobs = filtered_jobs
+
+        # Limit to max_candidates
+        return jobs[:max_candidates]
+
+    def match(self, user_profile, top_n=20):
+        """
+        Match user profile against jobs from database only
+        Returns: List of job matches sorted by score
+        """
+        # Get candidate jobs from database
+        jobs = self._prefilter_jobs(user_profile, max_candidates=500)
+
+        matches = []
+
+        for job in jobs:
+            # Database format: flat dictionary
+            job_skills = job.get('skills', [])
+            job_edu_level = job.get('education_level', '')
+            job_edu_major = job.get('education_major', '')
+            job_min_years = job.get('min_years_experience', 0)
+            job_languages = job.get('languages', [])
+            job_location = job.get('location', '')
+
+            # Compute component scores
+            skill_score = self.skill_scorer.score(
+                user_skills=[s.skill_name for s in user_profile.skills.all()],
+                job_skills=job_skills
+            )
+
+            education_score = self.education_scorer.score(
+                user_level=user_profile.education_level,
+                user_major=user_profile.education_major,
+                job_level=job_edu_level,
+                job_major=job_edu_major
+            )
+
+            experience_score = self.experience_scorer.score(
+                user_years=user_profile.years_of_experience,
+                job_min_years=job_min_years
+            )
+
+            language_score = self.language_scorer.score(
+                user_languages=[{
+                    'name': lang.language_name,
+                    'level': lang.proficiency
+                } for lang in user_profile.languages.all()],
+                job_languages=job_languages
+            )
+
+            location_score = self.location_scorer.score(
+                user_location=user_profile.preferred_location,
+                job_location=job_location,
+                willing_to_relocate=user_profile.willing_to_relocate
+            )
+
+            # Weighted aggregation - Skills prioritized
+            match_score = (
+                skill_score * 0.60 +  # Increased from 40% to 60%
+                education_score * 0.20 +  # Reduced from 25% to 20%
+                experience_score * 0.15 +  # Reduced from 20% to 15%
+                language_score * 0.03 +  # Reduced from 10% to 3%
+                location_score * 0.02  # Reduced from 5% to 2%
+            )
+
+            # Skill gap analysis
+            missing_skills = self.skill_gap_analyzer.analyze(
+                user_skills=[s.skill_name for s in user_profile.skills.all()],
+                job_skills=job_skills
+            )
+
+            # Normalize job format for consistent output
+            normalized_job = {
+                'job_id': job['job_id'],
+                'job_title': job['job_title'],
+                'company': job.get('company', 'N/A'),
+                'location': job.get('location', 'N/A'),
+                'skills': job_skills,
+                'education': {
+                    'level': job_edu_level,
+                    'major': job_edu_major
+                },
+                    'experience': {
+                        'min_years': job_min_years
+                    },
+                    'languages': job_languages
+                }
+
+            matches.append({
+                'job': normalized_job,
+                'match_score': match_score,
+                'skill_score': skill_score,
+                'education_score': education_score,
+                'experience_score': experience_score,
+                'language_score': language_score,
+                'location_score': location_score,
+                'missing_skills': missing_skills
+            })
+
+        # Sort by match score (descending)
+        matches.sort(key=lambda x: x['match_score'], reverse=True)
+
+        return matches[:top_n]
