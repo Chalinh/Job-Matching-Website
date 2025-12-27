@@ -81,9 +81,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# Get DATABASE_URL from environment, fallback to SQLite for local dev
+DATABASE_URL = config('DATABASE_URL', default='sqlite:///db.sqlite3')
+
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL'),
+        default=DATABASE_URL,
         conn_max_age=600,
         conn_health_checks=True,
     )
