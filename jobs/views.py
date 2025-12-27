@@ -1,21 +1,55 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from .forms import JobSearchForm
 from .services.matcher import JobMatcher
-from .models import UserProfile, UserSkill, UserLanguage
+from .models import UserProfile, UserSkill, UserLanguage, Job
+import logging
+import traceback
+
+logger = logging.getLogger(__name__)
 
 
 def search(request):
     """Display job search form"""
-    form = JobSearchForm()
-    return render(request, 'search.html', {'form': form})
+    try:
+        # Check if there are jobs in the database
+        job_count = Job.objects.count()
+        logger.info(f"Number of jobs in database: {job_count}")
+
+        form = JobSearchForm()
+        return render(request, 'search.html', {
+            'form': form,
+            'job_count': job_count
+        })
+    except Exception as e:
+        logger.error(f"Error in search view: {str(e)}")
+        logger.error(traceback.format_exc())
+        return HttpResponse(f"Error loading search page: {str(e)}", status=500)
 
 
 def search_results(request):
     """Process search and display matched jobs"""
-    if request.method == 'POST':
+    try:
+        if request.method != 'POST':
+            # If not POST, redirect to search
+            form = JobSearchForm()
+            return render(request, 'search.html', {'form': form})
+
+        # Check if there are any jobs in database
+        job_count = Job.objects.count()
+        logger.info(f"Total jobs in database: {job_count}")
+
+        if job_count == 0:
+            return render(request, 'results.html', {
+                'results': [],
+                'total_matches': 0,
+                'error': 'No jobs available in the database. Please contact the administrator.'
+            })
+
         form = JobSearchForm(request.POST)
 
         if form.is_valid():
+            logger.info("Form is valid, processing search...")
             # Create temporary user profile (not saved to database)
             temp_profile = UserProfile(
                 years_of_experience=form.cleaned_data.get('years_of_experience', 0),
@@ -54,8 +88,20 @@ def search_results(request):
 
             # Initialize JobMatcher and find matches (top 5 results)
             # Database-only operation
-            matcher = JobMatcher()
-            matches = matcher.match(temp_profile, top_n=5)
+            logger.info("Initializing JobMatcher...")
+            try:
+                matcher = JobMatcher()
+                logger.info("JobMatcher initialized, starting matching process...")
+                matches = matcher.match(temp_profile, top_n=5)
+                logger.info(f"Matching completed. Found {len(matches)} matches.")
+            except Exception as match_error:
+                logger.error(f"Error during matching: {str(match_error)}")
+                logger.error(traceback.format_exc())
+                return render(request, 'results.html', {
+                    'results': [],
+                    'total_matches': 0,
+                    'error': f'Error during job matching: {str(match_error)}'
+                })
 
             # Format results for template
             results = []
@@ -82,7 +128,15 @@ def search_results(request):
                 'results': results,
                 'total_matches': len(results)
             })
+        else:
+            # Form is invalid
+            logger.warning(f"Form validation failed: {form.errors}")
+            return render(request, 'search.html', {
+                'form': form,
+                'error': 'Please correct the errors in the form.'
+            })
 
-    # If not POST or form invalid, redirect to search
-    form = JobSearchForm()
-    return render(request, 'search.html', {'form': form})
+    except Exception as e:
+        logger.error(f"Unexpected error in search_results: {str(e)}")
+        logger.error(traceback.format_exc())
+        return HttpResponse(f"Error processing search: {str(e)}<br><br>Traceback:<br><pre>{traceback.format_exc()}</pre>", status=500)
