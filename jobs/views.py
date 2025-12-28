@@ -20,6 +20,8 @@ def search(request):
         except ProgrammingError:
             logger.warning("Jobs table does not exist, running migrations...")
             call_command('migrate', verbosity=1, interactive=False)
+            logger.info("Running load_jobs...")
+            call_command('load_jobs', verbosity=1)
             job_count = Job.objects.count()
         logger.info(f"Number of jobs in database: {job_count}")
 
