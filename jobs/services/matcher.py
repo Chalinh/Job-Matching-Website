@@ -5,6 +5,9 @@ from .scorers import SkillScorer, EducationScorer, ExperienceScorer, LanguageSco
 from .skill_gap import SkillGapAnalyzer
 import json
 from pathlib import Path
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class JobMatcher:
@@ -43,20 +46,30 @@ class JobMatcher:
         user_location = user_profile.preferred_location.lower() if user_profile.preferred_location else None
         user_experience = user_profile.years_of_experience
 
+        total_jobs = Job.objects.count()
+        logger.info(f"Starting prefilter with {total_jobs} total jobs")
+        logger.info(f"User skills: {user_skills}")
+        logger.info(f"User location: {user_location}, willing to relocate: {user_profile.willing_to_relocate}")
+        logger.info(f"User experience: {user_experience} years")
+
         # Build filter query
         query = Q()
 
         # Filter 1: Location match (if user not willing to relocate)
         if user_location and not user_profile.willing_to_relocate:
             query &= Q(location__icontains=user_location)
+            logger.info(f"Applied location filter: {user_location}")
 
         # Filter 2: Experience requirement (user meets minimum)
         # Allow some flexibility: user_exp >= (job_min - 2)
         if user_experience > 0:
             query &= Q(min_years_experience__lte=user_experience + 2)
+            logger.info(f"Applied experience filter: <= {user_experience + 2} years")
 
         # Start with filtered base queryset
         jobs_qs = Job.objects.filter(query) if query else Job.objects.all()
+        jobs_after_db_filter = jobs_qs.count()
+        logger.info(f"Jobs after database filters: {jobs_after_db_filter}")
 
         # Filter 3: Skill overlap (using PostgreSQL JSONB containment)
         # This is more complex - we'll fetch all and filter in Python for now
@@ -68,14 +81,26 @@ class JobMatcher:
             'skills', 'languages', 'raw_text', 'pubdate', 'expdate'
         ))
 
-        # Filter 4: Require at least 1 skill overlap (if user has skills)
+        # Filter 4: Prefer jobs with skill overlap, but don't require it
+        # This allows semantic matching to find similar skills
         if user_skills:
-            filtered_jobs = []
+            jobs_with_overlap = []
+            jobs_without_overlap = []
+            
             for job in jobs:
                 job_skills = [s.lower() for s in job.get('skills', [])]
                 if set(user_skills) & set(job_skills):  # At least 1 skill match
-                    filtered_jobs.append(job)
-            jobs = filtered_jobs
+                    jobs_with_overlap.append(job)
+                else:
+                    jobs_without_overlap.append(job)
+            
+            logger.info(f"Jobs with skill overlap: {len(jobs_with_overlap)}")
+            logger.info(f"Jobs without skill overlap: {len(jobs_without_overlap)}")
+            
+            # Prioritize jobs with overlap, but include others too (up to max_candidates)
+            jobs = jobs_with_overlap + jobs_without_overlap
+        
+        logger.info(f"Total jobs after all filters: {len(jobs)}")
 
         # Limit to max_candidates
         return jobs[:max_candidates]

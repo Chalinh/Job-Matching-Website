@@ -59,6 +59,13 @@ def search_results(request):
 
         if form.is_valid():
             logger.info("Form is valid, processing search...")
+            
+            # Log form data for debugging
+            logger.info(f"Skills from form: {form.cleaned_data.get('skills', [])}")
+            logger.info(f"Languages from form: {form.cleaned_data.get('languages', [])}")
+            logger.info(f"Experience: {form.cleaned_data.get('years_of_experience', 0)} years")
+            logger.info(f"Location: {form.cleaned_data.get('preferred_location', '')}, willing to relocate: {form.cleaned_data.get('willing_to_relocate', False)}")
+            
             # Create temporary user profile (not saved to database)
             temp_profile = UserProfile(
                 years_of_experience=form.cleaned_data.get('years_of_experience', 0),

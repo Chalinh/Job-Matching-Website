@@ -6,6 +6,7 @@ class SkillScorer:
 
     def __init__(self, embedding_service):
         self.embedding_service = embedding_service
+        self.use_semantic = True  # Flag to disable semantic matching if it fails
 
     def score(self, user_skills, job_skills):
         """
@@ -22,8 +23,8 @@ class SkillScorer:
         exact_matches = user_set & job_set
         exact_score = len(exact_matches) / len(job_set)
 
-        # Step 2: Semantic matching (only if exact match is poor)
-        if exact_score >= 0.7:
+        # Step 2: Semantic matching (only if exact match is poor and semantic is enabled)
+        if exact_score >= 0.7 or not self.use_semantic:
             return exact_score
 
         # Compute semantic similarity for unmatched skills
@@ -32,25 +33,31 @@ class SkillScorer:
         if not unmatched_job_skills:
             return exact_score
 
-        # Embed user skills and unmatched job skills
-        user_embeddings = self.embedding_service.embed_batch(list(user_set))
-        job_embeddings = self.embedding_service.embed_batch(list(unmatched_job_skills))
+        try:
+            # Embed user skills and unmatched job skills
+            user_embeddings = self.embedding_service.embed_batch(list(user_set))
+            job_embeddings = self.embedding_service.embed_batch(list(unmatched_job_skills))
 
-        # Compute similarity matrix
-        similarities = []
-        for job_emb in job_embeddings:
-            max_sim = max(
-                self.embedding_service.cosine_similarity(job_emb, user_emb)
-                for user_emb in user_embeddings
-            )
-            similarities.append(max_sim)
+            # Compute similarity matrix
+            similarities = []
+            for job_emb in job_embeddings:
+                max_sim = max(
+                    self.embedding_service.cosine_similarity(job_emb, user_emb)
+                    for user_emb in user_embeddings
+                )
+                similarities.append(max_sim)
 
-        semantic_score = np.mean(similarities)
+            semantic_score = np.mean(similarities)
 
-        # Combine: 70% exact, 30% semantic
-        final_score = (exact_score * 0.7) + (semantic_score * 0.3)
+            # Combine: 70% exact, 30% semantic
+            final_score = (exact_score * 0.7) + (semantic_score * 0.3)
 
-        return min(final_score, 1.0)
+            return min(final_score, 1.0)
+        except Exception as e:
+            # If semantic matching fails (e.g., memory error), disable it and use exact match only
+            print(f"Warning: Semantic matching failed ({str(e)}), falling back to exact matching only")
+            self.use_semantic = False
+            return exact_score
 
 
 class EducationScorer:
