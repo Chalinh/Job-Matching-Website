@@ -147,6 +147,9 @@ staticfiles/
 static/
 
 # Media files (uploaded)
+# Environment variables
+.env
+
 media/
 
 # Node.js (if any frontend)
