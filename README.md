@@ -10,7 +10,7 @@ A smart, **guest-only** job matching system that uses AI to match user profiles 
 - 🎯 **Top 5 Results** - Shows only the best matches
 - 📈 **Skill Gap Analysis** - See what skills you need to develop
 - 🎨 **Beautiful UI** - Modern Tailwind CSS design
-- 🗄️ **SQLite Database** - Simple, no installation required, production-ready
+- 🗄️ **PostgreSQL Database** - Production-ready
 - ⚡ **Fast Matching** - Semantic search with sentence transformers
 
 ---
